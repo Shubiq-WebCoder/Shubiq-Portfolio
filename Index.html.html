@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubiq Designs - Portfolio</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font for Canva logo clone -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            overflow-x: hidden;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Loading Screen Styles */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #000000;
+            font-family: 'Times New Roman', Times, serif;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .loading-text {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .loading-letter {
+            font-size: 40px;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0 5px;
+            transform: translateY(0);
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+        
+        .loading-line {
+            height: 4px;
+            width: 200px;
+            background-color: #fafaff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        
+        .loading-line::after {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 50px;
+            background-color: #6c63ff;
+            animation: slide 1.5s infinite ease-in-out;
+            border-radius: 2px;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes slide {
+            0% {
+                left: -50px;
+            }
+            100% {
+                left: 200px;
+            }
+        }
+        
+        /* Delay each letter's animation */
+        .loading-letter:nth-child(1) { animation-delay: 0.1s; }
+        .loading-letter:nth-child(2) { animation-delay: 0.2s; }
+        .loading-letter:nth-child(3) { animation-delay: 0.3s; }
+        .loading-letter:nth-child(4) { animation-delay: 0.4s; }
+        .loading-letter:nth-child(5) { animation-delay: 0.5s; }
+        .loading-letter:nth-child(6) { animation-delay: 0.6s; }
+        .loading-letter:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Hide the content initially */
+        #content {
+            display: none;
+        }
+        
+        /* 3D Canvas Background */
+        #threejs-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        /* Header */
+        header {
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 15px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: #6c63ff;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            width: 60%;
+        }
+        
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero h1 span {
+            color: #6c63ff;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #666;
+            line-height: 1.6;
+            max-width: 80%;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #6c63ff;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+        
+        .btn:hover {
+            background: #5a52e0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.4);
+        }
+        
+        #3d-avatar {
+            position: absolute;
+            right: 0;
+            width: 40%;
+            height: 80%;
+        }
+        
+        /* About Section & Other Sections */
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #6c63ff;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-text h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: #666;
+        }
+        
+        .skills-container {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .skill-card {
+            width: calc(50% - 10px);
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .skill-card i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #6c63ff;
+        }
+        
+        .skill-card h4 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        /* Project Section - Infinite Horizontal Carousel */
+        .projects-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 30px;
+            padding: 20px 0;
+            /* Remove scroll-snap-type for smooth infinite scroll illusion */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .projects-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .projects-carousel {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        .project-card {
+            flex-shrink: 0;
+            width: 350px;
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        .project-img {
+            height: 250px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .project-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 150px; /* Consistent height for the info section */
+        }
+        
+        .project-info h3 {
+            margin-bottom: 5px;
+            font-size: 22px;
+        }
+        
+        .project-info p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        /* Filter Buttons - Removed from HTML, kept for styling reference */
+        .project-tab-btn {
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            outline: none;
+            padding: 12px 30px;
+            margin: 0 10px 10px 0;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(108, 99, 255, 0.08);
+        }
+        
+        .project-tab-btn.active {
+            background: #6c63ff !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+            animation: tabPop 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        
+        .project-tab-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+        }
+        
+        .project-tab-btn:hover {
+            transform: translateY(-4px) scale(1.07);
+            box-shadow: 0 8px 24px rgba(13, 0, 255, 0.18);
+            background: #ecebff;
+            color: #0d00ff;
+        }
+        
+        @keyframes tabPop {
+            0% { transform: scale(1); }
+            60% { transform: scale(1.18); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Contact Section */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        /* Floating 3D Elements */
+        .floating-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #232323;
+            color: #fff;
+            padding: 18px 0;
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        footer .container {
+            max-width: 1500px;
+            margin: 10 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .icon {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon i {
+            font-size: 20px;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #2c3e50;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tooltip::before {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #fff;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #555;
+            font-size: 18px;
+        }
+
+        .icon:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Platform-specific colors */
+        .facebook:hover { background: #1877f2; color: white; }
+        .whatsapp:hover { background: #25d366; color: white; }
+        .instagram:hover { 
+            background: radial-gradient(circle at 30% 107%, 
+                                         #fdf497 0%, #fdf497 5%, 
+                                         #fd5949 45%, #d6249f 60%, 
+                                         #285AEB 90%);
+            color: white;
+        }
+        .twitter:hover { background: #1da1f2; color: white; }
+        .linkedin:hover { background: #0077b5; color: white; }
+        
+        .copyright {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #ecf0f1;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Thank You Modal */
+        .thank-you-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .thank-you-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+        
+        .thank-you-content i {
+            font-size: 50px;
+            color: #6c63ff;
+            margin-bottom: 20px;
+        }
+        
+        .thank-you-content h2 {
+            margin-bottom: 15px;
+        }
+        
+        .thank-you-content button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: #6c63ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .hero p {
+                max-width: 100%;
+            }
+            
+            #3d-avatar {
+                display: none;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .projects-carousel .project-card {
+                width: calc(100vw - 40px);
+            }
+            
+            nav ul li {
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-container">
+            <div class="loading-text">
+                <div class="loading-letter">L</div>
+                <div class="loading-letter">O</div>
+                <div class="loading-letter">A</div>
+                <div class="loading-letter">D</div>
+                <div class="loading-letter">I</div>
+                <div class="loading-letter">N</div>
+                <div class="loading-letter">G</div>
+            </div>
+            <div class="loading-line"></div>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden initially) -->
+    <div id="content">
+        <!-- 3D Background Canvas -->
+        <canvas id="threejs-canvas"></canvas>
+        
+        <!-- Floating decorative elements -->
+        <div class="floating-element" style="top: 20%; left: 10%; width: 200px; height: 200px;"></div>
+        <div class="floating-element" style="top: 60%; right: 15%; width: 150px; height: 150px;"></div>
+        
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <div class="logo">Shubiq Designs</div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <!-- Hero Section -->
+            <section class="hero" id="home">
+                <div class="hero-content">
+                    <h1>Hi, I'm <span>Shubham Patil</span><br>Freelancer</h1>
+                    <p>I create immersive stunning visual designs that help brands stand out in the digital world.</p>
+                    <a href="#contact" class="btn">Hire </a>
+                </div>
+                <div id="3d-avatar">
+                    <!-- 3D Avatar will be rendered here -->
+                </div>
+            </section>
+            
+            <!-- About Section -->
+            <section class="section" id="about">
+                <h2 class="section-title">About Me</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Shubham Patil</h3>
+                        <p>I'm a passionate Graphic Designer with over 4 years of experience creating immersive digital experiences. My expertise lies in blending creative design with technical implementation to deliver stunning visual solutions..</p>
+                        <p>I am specialized in Video Editing, Graphic Designing, and Colour Grading using technologies like Adobe Photoshop, Adobe Premier Pro, Capcut and Canva. My goal is to help brands to elevate brands through immersive visual design.</p>
+                    </div>
+                    <div class="skills-container">
+                        <div class="skill-card">
+                            <i class="fas fa-camera"></i>
+                            <h4>Video Editing</h4>
+                            <p>Transforming raw footage into engaging, high-impact visual content</p>
+                        </div>
+                        <div class="skill-card">
+                            <i class="fas fa-laptop"></i>
+                            <h4>Graphic Designing</h4>
+                            <p>Professional graphics tailored to brand identity and audience needs</p>
+                        </div>
+                        <div class="skill-card">
+                            <i class="fas fa-film"></i>
+                            <h4>Digital marketing</h4>
+                            <p>Building digital experiences that attract, convert, and retain customers</p>
+                        </div>
+                        <div class="skill-card">
+                            <i class="fas fa-paint-brush"></i>
+                            <h4>Logo Design & Branding</h4>
+                            <p>Building visual identities that align with your brand vision</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- skills-section -->
+            <section id="skills" class="skills-section" style="padding: 60px 20px; background: #f8f9fa00;">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <h2 style="text-align: center; margin-bottom: 40px; font-size: 2rem;">My Skills</h2>
+                    
+                    <div class="skills-grid" style="display: grid; 
+                                                     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+                                                     gap: 30px; 
+                                                     justify-items: center;">
+                        <!-- Adobe Photoshop -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Photoshop Icon (SVG) -->
+                            <svg width="36" height="36" viewBox="0 0 32 32" style="display:block;margin:0 auto 15px;fill:none;">
+                                <rect width="32" height="32" rx="7" fill="#001e36"/>
+                                <text x="7" y="24" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#31A8FF">Ps</text>
+                            </svg>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Adobe Photoshop</h4>
+                        </div>
+                            
+                        <!-- Adobe Illustrator -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Illustrator Icon (SVG) -->
+                            <svg width="36" height="36" viewBox="0 0 32 32" style="display:block;margin:0 auto 15px;fill:none;">
+                                <rect width="32" height="32" rx="7" fill="#2C0900"/>
+                                <text x="7" y="24" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#FF9A00">Ai</text>
+                            </svg>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Adobe Illustrator</h4>
+                        </div>
+                        
+                        <!-- Adobe Premier Pro -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Premiere Pro Icon (SVG) -->
+                            <svg width="36" height="36" viewBox="0 0 32 32" style="display:block;margin:0 auto 15px;fill:none;">
+                                <rect width="32" height="32" rx="7" fill="#1C0038"/>
+                                <text x="7" y="24" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#EA77FF">Pr</text>
+                            </svg>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Adobe Premier Pro</h4>
+                        </div>
+                        
+                        <!-- Canva -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Canva Logo Clone -->
+                            <div style="width: 36px; height: 36px; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center;">
+                                <span style="
+                                    display: flex;
+                                    width: 36px;
+                                    height: 36px;
+                                    border-radius: 50%;
+                                    background: radial-gradient(circle at top left, #00c4cc, #7b2ff7);
+                                    justify-content: center;
+                                    align-items: center;
+                                    font-family: 'Pacifico', cursive, Arial, sans-serif;
+                                    font-size: 13px;
+                                    color: #fff;
+                                ">
+                                    Canva
+                                </span>
+                            </div>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Canva</h4>
+                        </div>
+                        <!-- Google SEO -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Google SEO Icon (SVG) -->
+                            <svg width="36" height="36" viewBox="0 0 36 36" style="display:block;margin:0 auto 15px;" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="18" cy="18" r="18" fill="#4285F4"/>
+                                <text x="50%" y="62%" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#fff">SEO</text>
+                            </svg>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Google SEO</h4>
+                        </div>
+
+                        <!-- Photography -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Photography Icon (SVG) -->
+                            <svg width="36" height="36" viewBox="0 0 36 36" style="display:block;margin:0 auto 15px;" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="18" cy="18" r="18" fill="#6c63ff"/>
+                                <g>
+                                    <rect x="9" y="13" width="18" height="12" rx="3" fill="#fff"/>
+                                    <circle cx="18" cy="19" r="4" fill="#6c63ff"/>
+                                    <circle cx="18" cy="19" r="2" fill="#fff"/>
+                                    <rect x="15" y="11" width="6" height="4" rx="1" fill="#6c63ff"/>
+                                </g>
+                            </svg>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Photography</h4>
+                        </div>
+                        
+                        <!-- SMM -->
+                        <div class="skill-card" style="background: white; 
+                                                     border-radius: 10px; 
+                                                     padding: 25px; 
+                                                     width: 100%; 
+                                                     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                                     text-align: center;">
+                            <!-- Instagram Icon (SVG) -->
+                            <svg width="36" height="36" viewBox="0 0 36 36" style="display:block;margin:0 auto 15px;" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="insta-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fdf497"/>
+                                        <stop offset="5%" stop-color="#fdf497"/>
+                                        <stop offset="45%" stop-color="#fd5949"/>
+                                        <stop offset="60%" stop-color="#d6249f"/>
+                                        <stop offset="90%" stop-color="#285AEB"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="0" y="0" width="36" height="36" rx="8" fill="url(#insta-gradient)"/>
+                                <circle cx="18" cy="18" r="8" fill="none" stroke="white" stroke-width="2"/>
+                                <circle cx="27" cy="11" r="2" fill="white"/>
+                            </svg>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.2rem;">Social Media Marketing</h4>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                
+            <!-- Projects Section - Updated to Infinite Horizontal Carousel -->
+            <section class="section" id="projects">
+                <h2 class="section-title">My Projects</h2>
+
+                <!-- Container for horizontally scrolling project cards -->
+                <div class="projects-carousel" id="projects-container">
+                    <!-- Project cards will be dynamically added here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Other Services Section -->
+            <section id="other-services" class="section" style="padding: 60px 0; background-color: #f8f9fa00;">
+              <div class="container" style="max-width: 800px; margin: 0 auto;">
+                <h2 class="section-title" style="text-align: center; font-size: 2rem; margin-bottom: 15px; color: #6c63ff;">Other Services</h2>
+                <p class="section-subtitle" style="text-align: center; color: #666; margin-bottom: 30px;">Additional professional services I offer</p>
+
+                <div style="background: rgba(255, 255, 255, 0.464); border-radius: 10px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                  <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eeeeee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-book" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">E-book & Book Cover Design</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Professional designs that attract readers and convey your story</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-id-card" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Business Card Design</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Memorable cards that make a strong first impression</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-file" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Presentation Design (PPT) </h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Professional slides that engage your audience</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-share-alt" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Social Media Marketing (SMM)</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Effective strategies to grow your online presence</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-images" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Poster & Banner Design</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Eye-catching promotional materials for any purpose</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-file-alt" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Brochure & Flyer Design</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Professional marketing collateral that converts</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-keyboard" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Copywriting</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Compelling content that engages and converts</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-globe" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Translation</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Accurate multilingual content adaptation</p>
+                      </div>
+                    </li>
+                    <li style="padding: 15px 20px; display: flex; align-items: center;">
+                      <div style="width: 40px; height: 40px; background-color: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-camera" style="color: #6c63ff; font-size: 18px;"></i>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Event Photography</h3>
+                        <p style="margin: 0; color: #666; font-size: 15px;">Capturing Memorable Moments</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="contact-section" style="padding: 80px 0; background: #f8f9fa7e;">
+                <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+                    <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 15px; color: #6c63ff;">Contact Me </h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 50px; font-size: 1.1rem;">Let's collaborate on your project</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;">
+                        <div style="flex: 1; min-width: 300px; background: rgba(255, 255, 255, 0.363); padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); max-width: 400px; margin: 0 auto;">
+                            <h3 style="color: #6c63ff; margin-bottom: 20px; font-size: 1.5rem; text-align: center;">Get In Touch</h3>
+                            <div style="margin-bottom: 25px;">
+                                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                                    <div style="width: 50px; height: 50px; background: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                        <i class="fas fa-envelope" style="color: #6c63ff; font-size: 20px;"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin: 0 0 5px 0; font-size: 1.1rem;">Email</h4>
+                                        <a href="mailto:shubiq56@gmail.com" style="color: #666; text-decoration: none; font-size: 1rem;">shubiq56@gmail.com</a>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <div style="width: 50px; height: 50px; background: rgba(108, 99, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                        <i class="fas fa-phone-alt" style="color: #6c63ff; font-size: 20px;"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin: 0 0 5px 0; font-size: 1.1rem;">Phone/WhatsApp</h4>
+                                        <a href="https://wa.me/918123923605" style="color: #666; text-decoration: none; font-size: 1rem;">+91 8123923605</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <a href="https://wa.me/918123923605" onclick="showThankYou()" style="display: inline-flex; align-items: center; justify-content: center; padding: 12px 25px; background: #25D366; color: white; border-radius: 30px; text-decoration: none; font-weight: 500; transition: all 0.3s; margin-bottom: 10px;">
+                                    <i class="fab fa-whatsapp" style="margin-right: 10px; font-size: 20px;"></i> Chat on WhatsApp
+                                </a>
+                                <br>
+                                <a href="mailto:shubiq56@gmail.com?subject=Project%20Inquiry&body=Hi%20Shubham%2C%0A%0AHope%20you're%20doing%20well!%20I%20came%20across%20your%20profile%20and%20was%20impressed%20by%20your%20expertise%20in%20digital%20marketing%2C%20graphic%20design%2C%20and%20video%20editing.%20I%E2%80%99d%20love%20to%20discuss%20a%20potential%20project%20with%20you.%20Let%20me%20know%20if%20you%E2%80%99re%20available%20for%20a%20quick%20chat.%0A%0ALooking%20forward%20to%20your%20response!%0A%0ABest%20regards%2C%0A%5BYour%20Name%5D" 
+                                   style="display: inline-flex; align-items: center; justify-content: center; padding: 12px 25px; background: #6c63ff; color: white; border-radius: 30px; text-decoration: none; font-weight: 500; transition: all 0.3s;">
+                                    <i class="fas fa-envelope" style="margin-right: 10px; font-size: 20px;"></i> Send Email
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Thank You Modal -->
+            <div id="thankYouModal" class="thank-you-modal">
+                <div class="thank-you-content">
+                    <i class="fas fa-check-circle"></i>
+                    <h2>Thank You!</h2>
+                    <p>Please leave a message for me. I'll get back to you soon.</p>
+                    <button onclick="closeThankYou()">Close</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="social-icons">
+                    <a href="#" class="icon facebook">
+                        <div class="tooltip">Facebook</div>
+                        <span><i class="fa-brands fa-facebook-f"></i></span>
+                    </a>
+                    <a href="#" class="icon whatsapp">
+                        <div class="tooltip">WhatsApp</div>
+                        <span><i class="fa-brands fa-whatsapp"></i></span>
+                    </a>
+                    <a href="#" class="icon instagram">
+                        <div class="tooltip">Instagram</div>
+                        <span><i class="fa-brands fa-instagram"></i></span>
+                    </a>
+                    <a href="#" class="icon linkedin">
+                        <div class="tooltip">LinkedIn</div>
+                        <span><i class="fa-brands fa-linkedin"></i></span>
+                    </a>
+                    <a href="#" class="icon twitter">
+                        <div class="tooltip">Twitter</div>
+                        <span><i class="fa-brands fa-twitter"></i></span>
+                    </a>
+                </div>
+                <p class="copyright">© 2025 3D Portfolio. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Three.js and other 3D libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <!-- Three.js Background Script -->
+    <script>
+    // Hide loading screen and show content when everything is loaded
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('loading-screen').style.opacity = '0';
+            document.getElementById('content').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.display = 'none';
+            }, 500);
+        }, 1500); // Show loading for at least 1.5 seconds
+    
+        // Initialize Three.js scene
+        const canvas = document.getElementById('threejs-canvas');
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas, 
+            alpha: true,
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+        
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+        
+        const floatingElements = new THREE.Group();
+        scene.add(floatingElements);
+        
+        const colors = {
+            digitalMarketing: 0x25D366,
+            graphicDesign: 0x6c63ff,
+            photoshoot: 0xFF6B6B
+        };
+        
+        function createFloatingIcon(icon, color, size = 0.5) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const context = canvas.getContext('2d');
+            
+            context.fillStyle = `#${color.toString(16)}`;
+            context.font = 'Bold 180px Font Awesome 6 Free';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(icon, 128, 128);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const material = new THREE.SpriteMaterial({ 
+                map: texture,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            const sprite = new THREE.Sprite(material);
+            sprite.scale.set(size, size, size);
+            
+            sprite.position.x = (Math.random() - 0.5) * 10;
+            sprite.position.y = (Math.random() - 0.5) * 10;
+            sprite.position.z = (Math.random() - 0.5) * 10;
+            
+            sprite.userData = {
+                speed: 0.01 + Math.random() * 0.02,
+                amplitude: 0.5 + Math.random(),
+                rotationSpeed: (Math.random() - 0.5) * 0.02,
+                timeOffset: Math.random() * Math.PI * 2
+            };
+            
+            floatingElements.add(sprite);
+            return sprite;
+        }
+        
+        const icons = [
+            { icon: '📊', color: colors.digitalMarketing, name: 'Digital Marketing' },
+            { icon: '🎨', color: colors.graphicDesign, name: 'Graphic Design' },
+            { icon: '📷', color: colors.photoshoot, name: 'Photoshoot' }
+        ];
+        
+        icons.forEach(service => {
+            for (let i = 0; i < 5; i++) {
+                createFloatingIcon(service.icon, service.color, 0.3 + Math.random() * 0.3);
+            }
+        });
+        
+        const geometry = new THREE.IcosahedronGeometry(0.3, 0);
+        
+        for (let i = 0; i < 15; i++) {
+            const material = new THREE.MeshPhongMaterial({ 
+                color: Object.values(colors)[Math.floor(Math.random() * 3)],
+                emissive: 0x111111,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.7
+            });
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            mesh.position.x = (Math.random() - 0.5) * 15;
+            mesh.position.y = (Math.random() - 0.5) * 15;
+            mesh.position.z = (Math.random() - 0.5) * 15;
+            
+            const scale = 0.3 + Math.random() * 0.7;
+            mesh.scale.set(scale, scale, scale);
+            
+            mesh.userData = {
+                speed: 0.005 + Math.random() * 0.01,
+                amplitude: 0.3 + Math.random(),
+                rotationSpeed: (Math.random() - 0.5) * 0.02,
+                timeOffset: Math.random() * Math.PI * 2
+            };
+            
+            floatingElements.add(mesh);
+        }
+        
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+            
+            floatingElements.children.forEach(obj => {
+                obj.position.y += Math.sin(time * obj.userData.speed + obj.userData.timeOffset) * 0.01;
+                obj.position.x += Math.cos(time * obj.userData.speed * 0.7 + obj.userData.timeOffset) * 0.01;
+                
+                if (obj.rotation) {
+                    obj.rotation.x += obj.userData.rotationSpeed;
+                    obj.rotation.y += obj.userData.rotationSpeed * 0.5;
+                }
+                
+                if (obj.position.x > 10) obj.position.x = -10;
+                if (obj.position.x < -10) obj.position.x = 10;
+                if (obj.position.y > 10) obj.position.y = -10;
+                if (obj.position.y < -10) obj.position.y = 10;
+                if (obj.position.z > 10) obj.position.z = -10;
+                if (obj.position.z < -10) obj.position.z = 10;
+            });
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        animate();
+    });
+    </script>
+
+    <!-- Project Carousel & Modal Scripts -->
+    <script>
+    // Project data array
+    const allProjects = [
+        {
+            category: 'images',
+            frontImage: 'https://plus.unsplash.com/premium_vector-1698192226737-b6cfafc65110?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGNhcnRvb258ZW58MHx8MHx8fDA%3D',
+            frontTitle: 'Illustrator',
+            frontDesc: 'Illustration with logo designing',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://i.pinimg.com/736x/5f/e6/cd/5fe6cd120ca38bf40b6c89563162e521.jpg',
+            frontTitle: 'AD poster',
+            frontDesc: 'Eye-catching Ad poster design',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1599590984817-0c15f31b1fa5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fEJ1c2luZXNzJTIwY2FyZHxlbnwwfHwwfHx8MA%3D%3D',
+            frontTitle: 'Business Cards',
+            frontDesc: 'Premium business card design for a law firm',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1754543578375-f947102f3860?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            frontTitle: 'Photography',
+            frontDesc: 'Capturing moments through the lens',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            frontTitle: 'E-book and Book Covers',
+            frontDesc: 'Professional design to make your content stand out and engage readers.',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1615915468538-0fbd857888ca?q=80&w=768&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            frontTitle: 'Logo creation',
+            frontDesc: 'Designing unique logos and visual systems',
+        },
+        // Duplicate the projects for an infinite loop effect
+        {
+            category: 'images',
+            frontImage: 'https://plus.unsplash.com/premium_vector-1698192226737-b6cfafc65110?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGNhcnRvb258ZW58MHx8MHx8fDA%3D',
+            frontTitle: 'Illustrator',
+            frontDesc: 'Illustration with logo designing',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://i.pinimg.com/736x/5f/e6/cd/5fe6cd120ca38bf40b6c89563162e521.jpg',
+            frontTitle: 'AD poster',
+            frontDesc: 'Eye-catching Ad poster design',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1599590984817-0c15f31b1fa5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fEJ1c2luZXNzJTIwY2FyZHxlbnwwfHwwfHx8MA%3D%3D',
+            frontTitle: 'Business Cards',
+            frontDesc: 'Premium business card design for a law firm',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1754543578375-f947102f3860?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            frontTitle: 'Photography',
+            frontDesc: 'Capturing moments through the lens',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            frontTitle: 'E-book and Book Covers',
+            frontDesc: 'Professional design to make your content stand out and engage readers.',
+        },
+        {
+            category: 'images',
+            frontImage: 'https://images.unsplash.com/photo-1615915468538-0fbd857888ca?q=80&w=768&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            frontTitle: 'Logo creation',
+            frontDesc: 'Designing unique logos and visual systems',
+        },
+    ];
+
+    // Creates the HTML for a single project card
+    function createProjectCard(project) {
+        const card = document.createElement('div');
+        card.className = `project-card ${project.category}`;
+        card.innerHTML = `
+            <div class="project-img-container">
+                <img src="${project.frontImage}" alt="${project.frontTitle}" class="project-img">
+            </div>
+            <div class="project-info">
+                <h3>${project.frontTitle}</h3>
+                <p>${project.frontDesc}</p>
+            </div>
+        `;
+        return card;
+    }
+
+    // Renders projects for the infinite carousel
+    function renderProjects() {
+        const container = document.getElementById('projects-container');
+        // Clear previous content
+        container.innerHTML = '';
+        
+        // Combine projects in a loop for the infinite effect
+        const projectsForCarousel = [...allProjects, ...allProjects, ...allProjects];
+        
+        projectsForCarousel.forEach(project => {
+            container.appendChild(createProjectCard(project));
+        });
+    }
+
+    // Handles the infinite scroll logic
+    function handleInfiniteScroll() {
+        const carousel = document.getElementById('projects-container');
+        const cardWidth = 350; /* Needs to match .project-card width */
+        const gap = 30; /* Needs to match .projects-carousel gap */
+        const totalCardWidth = cardWidth + gap;
+
+        // Number of original projects
+        const originalProjectsCount = allProjects.length;
+
+        // If scrolling right and reach the end of the first duplicate set
+        if (carousel.scrollLeft >= originalProjectsCount * totalCardWidth) {
+            carousel.scrollLeft = (carousel.scrollLeft % totalCardWidth) + (originalProjectsCount * totalCardWidth) / 2;
+        }
+
+        // If scrolling left and reach the start of the first duplicate set
+        if (carousel.scrollLeft <= (originalProjectsCount * totalCardWidth) / 2) {
+            carousel.scrollLeft = carousel.scrollLeft + (originalProjectsCount * totalCardWidth);
+        }
+    }
+
+    // Set up event listeners and initial render on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        renderProjects(); // Initial load
+        
+        const carousel = document.getElementById('projects-container');
+        carousel.addEventListener('scroll', handleInfiniteScroll);
+    });
+
+    // Contact modal functions
+    function showThankYou() {
+        document.getElementById('thankYouModal').style.display = 'flex';
+    }
+    
+    function closeThankYou() {
+        document.getElementById('thankYouModal').style.display = 'none';
+    }
+    
+    window.onclick = function(event) {
+        const modal = document.getElementById('thankYouModal');
+        if (event.target === modal) {
+            closeThankYou();
+        }
+    }
+    </script>
+</body>
+</html>
